@@ -26,8 +26,8 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         
         # Count test files and results
-        UI_TESTS=$(find e2e_ui/tests -name "*.spec.ts" | wc -l)
-        API_TESTS=$(find e2e_api/tests -name "*.spec.ts" | wc -l)
+        UI_TESTS=$(find e2e_ui/tests -name "*.spec.ts" 2>/dev/null | wc -l || echo 0)
+        API_TESTS=$(find e2e_api/tests -name "*.spec.ts" 2>/dev/null | wc -l || echo 0)
         TOTAL_TESTS=$((UI_TESTS + API_TESTS))
         
         echo "### 📊 Test Coverage" >> $GITHUB_STEP_SUMMARY
@@ -38,7 +38,7 @@ jobs:
         
         # Check for failed tests
         if [ -d "test-results" ]; then
-          FAILED_TESTS=$(find test-results -name "*.png" | wc -l)
+          FAILED_TESTS=$(find test-results -name "*.png" 2>/dev/null | wc -l || echo 0)
           if [ $FAILED_TESTS -gt 0 ]; then
             echo "### ⚠️ Failed Tests" >> $GITHUB_STEP_SUMMARY
             echo "- **Screenshots captured**: $FAILED_TESTS failures" >> $GITHUB_STEP_SUMMARY
