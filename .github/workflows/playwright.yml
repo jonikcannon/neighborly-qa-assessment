@@ -22,18 +22,47 @@ jobs:
     - name: Extract test results
       if: always()
       run: |
-        echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
-        if [ -f "playwright-report/index.html" ]; then
-          echo "✅ Playwright report generated successfully" >> $GITHUB_STEP_SUMMARY
-          echo "📊 Report available in artifacts" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "❌ No Playwright report found" >> $GITHUB_STEP_SUMMARY
+        echo "## 🏁 Test Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Count test files and results
+        UI_TESTS=$(find e2e_ui/tests -name "*.spec.ts" | wc -l)
+        API_TESTS=$(find e2e_api/tests -name "*.spec.ts" | wc -l)
+        TOTAL_TESTS=$((UI_TESTS + API_TESTS))
+        
+        echo "### 📊 Test Coverage" >> $GITHUB_STEP_SUMMARY
+        echo "- **UI Tests**: $UI_TESTS test files" >> $GITHUB_STEP_SUMMARY
+        echo "- **API Tests**: $API_TESTS test files" >> $GITHUB_STEP_SUMMARY
+        echo "- **Total**: $TOTAL_TESTS test files" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for failed tests
+        if [ -d "test-results" ]; then
+          FAILED_TESTS=$(find test-results -name "*.png" | wc -l)
+          if [ $FAILED_TESTS -gt 0 ]; then
+            echo "### ⚠️ Failed Tests" >> $GITHUB_STEP_SUMMARY
+            echo "- **Screenshots captured**: $FAILED_TESTS failures" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
         fi
         
-        # Display test results if available
+        # Playwright report status
+        if [ -f "playwright-report/index.html" ]; then
+          echo "### ✅ Report Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Playwright HTML report generated" >> $GITHUB_STEP_SUMMARY
+          echo "- Download from artifacts to view detailed results" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### ❌ Report Status" >> $GITHUB_STEP_SUMMARY
+          echo "- No Playwright report generated" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Test execution details
         if [ -f "test-results/.last-run.json" ]; then
-          echo "### Last Test Run Details:" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔍 Execution Details" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
           cat test-results/.last-run.json >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         fi
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
