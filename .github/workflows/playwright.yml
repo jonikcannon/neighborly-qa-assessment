@@ -19,6 +19,22 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npm run test:all
+    - name: Extract test results
+      if: always()
+      run: |
+        echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+        if [ -f "playwright-report/index.html" ]; then
+          echo "✅ Playwright report generated successfully" >> $GITHUB_STEP_SUMMARY
+          echo "📊 Report available in artifacts" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ No Playwright report found" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        # Display test results if available
+        if [ -f "test-results/.last-run.json" ]; then
+          echo "### Last Test Run Details:" >> $GITHUB_STEP_SUMMARY
+          cat test-results/.last-run.json >> $GITHUB_STEP_SUMMARY
+        fi
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
