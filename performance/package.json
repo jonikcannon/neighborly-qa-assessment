@@ -1,0 +1,19 @@
+{
+  "name": "performance",
+  "version": "1.0.0",
+  "description": "performance tests repo",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test:smoke": "artillery run programs-smoke-test.yml",
+    "test:smoke:cloud": "artillery run programs-smoke-test.yml --record --key a9_iyzny22epvl1uk53l1wf0hm479xvuo1d",
+    "test": "artillery run programs-load-test.yml",
+    "test:cloud": "artillery run programs-newload-test.yml --record --key a9_iyzny22epvl1uk53l1wf0hm479xvuo1d",
+    "test:report": "artillery run --output report.json programs-load-test.yml && artillery report report.json"
+  },
+  "devDependencies": {
+    "artillery": "^2.0.26"
+  }
+}

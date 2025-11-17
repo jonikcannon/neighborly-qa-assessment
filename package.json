@@ -1,0 +1,24 @@
+{
+  "name": "neighborly-qa-assesment",
+  "version": "1.0.0",
+  "description": "QA test repo for Neighborly QA Sandbox",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test:ui": "playwright test --config=e2e_ui/playwright.config.ts",
+    "test:ui:head": "playwright test --config=e2e_ui/playwright.config.ts --headed",
+    "test:ui:debug": "playwright test --config=e2e_ui/playwright.config.ts --debug",
+    "test:api": "playwright test --config=e2e_api/playwright.config.ts",
+    "test:all": "npm run test:ui && npm run test:api"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.10.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
+}
