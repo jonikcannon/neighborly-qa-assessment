@@ -1,0 +1,27 @@
+config:
+  target: "https://zowdchiqxaedaniokvqe.supabase.co"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 10
+      name: "Sustained load"
+  processor: "./auth-processor.js"
+  variables:
+    apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpvd2RjaGlxeGFlZGFuaW9rdnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwMzU4MjMsImV4cCI6MjA3ODYxMTgyM30.1OXF9oRteK__YIeGMHPUCr6B8D1wsHUNhGPIiIQWZRI"
+    adminEmail: "admin@test.com"
+    adminPassword: "password123"
+
+scenarios:
+  - name: "Get Programs with Admin Auth"
+    beforeScenario: "getAuthToken"
+    flow:
+      - get:
+          url: "/rest/v1/programs?select=*&order=created_at.desc"
+          headers:
+            apikey: "{{ apiKey }}"
+            authorization: "Bearer {{ authToken }}"
+            accept-profile: "public"
+          expect:
+            - statusCode: 200
